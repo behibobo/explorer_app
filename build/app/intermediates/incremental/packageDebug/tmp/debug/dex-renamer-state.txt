@@ -1,0 +1,4 @@
+#Sun Apr 05 18:42:22 IRDT 2020
+base.0=/Users/bobo/Documents/splash/build/app/intermediates/dex/debug/mergeDexDebug/out/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
