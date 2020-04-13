@@ -1,5 +1,4 @@
 import 'package:explorer/models/user.dart';
-import 'package:explorer/settings/payment_history.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -237,8 +236,7 @@ class _WalletPageState extends State<WalletPage> with TickerProviderStateMixin {
                                   color: Colors.black),
                             ),
                             leading: Icon(Icons.payment, color: Colors.black),
-                            onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(builder: (_) => PaymentHistory())),
+                            onTap: () {},
                           ),
                           ListTile(
                             title: Text(
@@ -251,8 +249,7 @@ class _WalletPageState extends State<WalletPage> with TickerProviderStateMixin {
                                   color: Colors.black),
                             ),
                             leading: Icon(Icons.list, color: Colors.black),
-                            onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(builder: (_) => PaymentHistory())),
+                            onTap: () {},
                           )]))
                   ]),
                   ),

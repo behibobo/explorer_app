@@ -1,245 +1,86 @@
-import 'package:explorer/models/user.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:explorer/widgets/appbar.dart';
 
-class PaymentHistory extends StatefulWidget {
-  @override
-  _PaymentHistoryState createState() => _PaymentHistoryState();
-}
-
-class _PaymentHistoryState extends State<PaymentHistory> {
-  List<User> users = [];
-  List<String> dates = ['24th June 2019', '29th June 2019', '2nd July 2019'];
-
-  String selectedMonth = 'June 2019';
-
-  // Integrate your API SERVICE here
-  // You only need to define where are your data come from
-  // and ready.
-  _getUsers() async {
-    setState(() {
-      users = [];
-    });
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    _getUsers();
-    super.initState();
-  }
-
+class PaymentHistory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey[100],
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0.0,
-          iconTheme: IconThemeData(color:Colors.black),
-          title: Text(
-            'Payment History',
-            style: TextStyle(color: Colors.black),
-          ),
-          brightness: Brightness.light,
-        ),
-        body: SafeArea(
-          child: LayoutBuilder(
-              builder: (_, constraints) => Column(
+      appBar: AppBar(
+    iconTheme: IconThemeData(
+      color: Colors.black,
+    ),
+    backgroundColor: Colors.white,
+    elevation: 0.0,
+    title: Text(
+      "لیست تراکنش ها",
+      style: TextStyle(fontFamily: "Vazir", fontSize: 14, color: Colors.black),
+    ),
+    centerTitle: true,
+    // actions: <Widget>[
+    //   IconButton(
+    //     icon: Icon(
+    //       Icons.search,
+    //       color: Colors.blue,
+    //     ),
+    //     onPressed: () {},
+    //   )
+    // ],
+  ),
+      body: displayAccoutList()
+    );
+  }
 
-                children: <Widget>[
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 8.0),
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius:
-                        BorderRadius.all(Radius.circular(5))),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton(
-                        items: <String>[
-                          'January 2019',
-                          'February 2019',
-                          'March 2019',
-                          'April 2019',
-                          'May 2019',
-                          'June 2019',
-                          'July 2019',
-                          'August 2019',
-                          'September 2019',
-                          'Octomber 2019',
-                          'November 2019',
-                          'December 2019'
-                        ].map((val) {
-                          return DropdownMenuItem<String>(
-                            value: val,
-                            child: Container(
-                                color: Colors.white,
-                                child: Align(
-                                    alignment: Alignment.center,
-                                    child: Text(val))),
-                          );
-                        }).toList(),
-                        onChanged: (val) {
-                          setState(() {
-                            selectedMonth = val;
-                          });
-                        },
-                        value: selectedMonth,
-                        isExpanded: true,
-                        icon: Icon(Icons.keyboard_arrow_down),
-                        elevation: 0,
-                      ),
-                    ),
-                  ),
-                      Flexible(
-                        child: ListView(children: [
-                          ...dates
-                              .map((date) => Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Text(date,
-                                            style: TextStyle(
-                                                fontSize: 18.0,
-                                                fontWeight: FontWeight.bold)),
-                                      ),
-                                      Center(
-                                        child: users.length==0?CupertinoActivityIndicator():Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 16.0, vertical: 8.0),
-                                          color: Colors.white,
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: users
-                                                .map((user) => Column(
-                                                      children: <Widget>[
-                                                        Row(
-                                                          children: <Widget>[
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      right: 16.0),
-                                                              child: CircleAvatar(
-                                                                maxRadius: 24,
-                                                                backgroundImage:
-                                                                    NetworkImage(user
-                                                                        .picture
-                                                                        .thumbnail),
-                                                              ),
-                                                            ),
-                                                            Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: <Widget>[
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .only(
-                                                                          top:
-                                                                              16.0),
-                                                                  child: Text(
-                                                                      user.name
-                                                                              .first +
-                                                                          ' ' +
-                                                                          user.name
-                                                                              .last,
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              16.0,
-                                                                          fontWeight:
-                                                                              FontWeight
-                                                                                  .bold)),
-                                                                ),
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .only(
-                                                                          top: 8.0,
-                                                                          bottom:
-                                                                              16.0),
-                                                                  child: Text(
-                                                                    user.phone,
-                                                                  ),
-                                                                ),
-                                                                Text(
-                                                                  'Request',
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          10.0),
-                                                                )
-                                                              ],
-                                                            ),
-                                                            Spacer(),
-                                                            Column(
-                                                              children: <Widget>[
-                                                                Row(
-                                                                  mainAxisSize:
-                                                                      MainAxisSize
-                                                                          .min,
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: <
-                                                                      Widget>[
-                                                                    Text(
-                                                                      '\$ ',
-                                                                      style: TextStyle(
-                                                                          fontWeight:
-                                                                              FontWeight
-                                                                                  .bold,
-                                                                          fontSize:
-                                                                              10.0),
-                                                                    ),
-                                                                    Text(
-                                                                      '90.00',
-                                                                      style: TextStyle(
-                                                                          fontWeight:
-                                                                              FontWeight
-                                                                                  .bold),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .symmetric(
-                                                                          vertical:
-                                                                              8.0),
-                                                                  child: Text(
-                                                                      '2:00 am',
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              12,
-                                                                          color: Colors
-                                                                              .grey)),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets.only(
-                                                                  left: 64.0),
-                                                          child: Divider(),
-                                                        )
-                                                      ],
-                                                    ))
-                                                .toList(),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ))
-                              .toList(),
-                        ]),
-                      ),
-                    ],
-              )),
-        ));
+
+  Container accountItems(
+          String item, String charge, String dateString, String type,
+          {Color oddColour = Colors.white}) =>
+      Container(
+        decoration: BoxDecoration(color: oddColour),
+        padding:
+            EdgeInsets.only(top: 20.0, bottom: 20.0, left: 5.0, right: 5.0),
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(item, style: TextStyle(fontFamily: "Vazir", fontSize: 12.0)),
+                Text(charge, style: TextStyle(fontFamily: "Vazir",fontSize: 14.0))
+              ],
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(dateString,
+                    style: TextStyle(color: Colors.grey, fontFamily: "Vazir", fontSize: 12.0)),
+                Text(type, style: TextStyle(fontFamily: "Vazir", color: Colors.grey, fontSize: 12.0))
+              ],
+            ),
+          ],
+        ),
+      );
+
+  displayAccoutList() {
+    return Container(
+      margin: EdgeInsets.all(15.0),
+      child: Column(
+        children: <Widget>[
+          accountItems("Trevello App", r"ریال 4946", "1399-01-01", "اسکن",
+              oddColour: const Color(0xFFF7F7F9)),
+          accountItems(
+              "Creative Studios", r"ریال 5428", "1399-01-03", "اسکن"),
+          accountItems("Amazon EU", r"ریال 746", "1399-01-04", "شارژ حساب",
+              oddColour: const Color(0xFFF7F7F9)),
+          accountItems(
+              "Creative Studios", r"ریال 14526", "1399-01-05", "شارژ حساب"),
+          accountItems(
+              "Book Hub Society", r"ریال 2876", "1399-01-06", "اسکن",
+              oddColour: const Color(0xFFF7F7F9)),
+        ],
+      ),
+    );
   }
 }
+ 

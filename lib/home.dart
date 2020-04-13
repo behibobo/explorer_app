@@ -1,242 +1,215 @@
-import 'package:explorer/settings/wallet_page.dart';
+import 'package:explorer/gift_list.dart';
+import 'package:explorer/history.dart';
+import 'package:explorer/models/item.dart';
+import 'package:explorer/models/user.dart';
+import 'package:explorer/widgets/appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:explorer/providers/auth.dart';
+import 'package:explorer/styles/main.dart';
+import 'package:flutter_svg/svg.dart';
 
-import 'history/history.dart';
-import 'splash.dart';
+final String diamondIcon = 'images/diamond.svg';
+final String giftIcon = 'images/gifts.svg';
+final String winnerIcon = 'images/winner.svg';
+
 
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
-  List<Color> _backgroundColor;
-  Color _iconColor;
-  Color _textColor;
-  List<Color> _actionContainerColor;
-  Color _borderContainer;
-  bool colorSwitched = false;
-  var logoImage;
-
-  void changeTheme() async {
-    if (colorSwitched) {
-      setState(() {
-        logoImage = 'images/wallet_dark_logo.png';
-        _backgroundColor = [
-          Color.fromRGBO(252, 214, 0, 1),
-          Color.fromRGBO(251, 207, 6, 1),
-          Color.fromRGBO(250, 197, 16, 1),
-          Color.fromRGBO(249, 161, 28, 1),
-        ];
-        _iconColor = Colors.white;
-        _textColor = Color.fromRGBO(253, 211, 4, 1);
-        _borderContainer = Color.fromRGBO(34, 58, 90, 0.2);
-        _actionContainerColor = [
-          Color.fromRGBO(47, 75, 110, 1),
-          Color.fromRGBO(43, 71, 105, 1),
-          Color.fromRGBO(39, 64, 97, 1),
-          Color.fromRGBO(34, 58, 90, 1),
-        ];
-      });
-    } else {
-      setState(() {
-        logoImage = 'images/wallet_logo.png';
-        _borderContainer = Color.fromRGBO(252, 233, 187, 1);
-        _backgroundColor = [
-          Color.fromRGBO(249, 249, 249, 1),
-          Color.fromRGBO(241, 241, 241, 1),
-          Color.fromRGBO(233, 233, 233, 1),
-          Color.fromRGBO(222, 222, 222, 1),
-        ];
-        _iconColor = Colors.black;
-        _textColor = Colors.black;
-        _actionContainerColor = [
-          Color.fromRGBO(255, 212, 61, 1),
-          Color.fromRGBO(255, 212, 55, 1),
-          Color.fromRGBO(255, 211, 48, 1),
-          Color.fromRGBO(255, 211, 43, 1),
-        ];
-      });
-    }
-  }
-
+class _HomeState extends State<Home> with TickerProviderStateMixin {
   @override
   void initState() {
-    changeTheme();
     super.initState();
+  }
+
+  Future<User> _getProfile() async {
+    return await Provider.of<AuthProvider>(context).profile();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: GestureDetector(
-          onLongPress: () {
-            if (colorSwitched) {
-              colorSwitched = false;
-            } else {
-              colorSwitched = true;
-            }
-            changeTheme();
-          },
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            
+      appBar: mainAppbar(context, "کاوشگر"),
+      body: SingleChildScrollView(
+        child: FutureBuilder<User>(
+      future: _getProfile(),
+      builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
+        List<Widget> children;
+
+        if (snapshot.hasData) {
+          children = <Widget>[
+            content(context, snapshot.data),
+          ];
+        } else if (snapshot.hasError) {
+          children = <Widget>[
+            Icon(
+              Icons.error_outline,
+              color: Colors.red,
+              size: 60,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: Text('Error: ${snapshot.error}'),
+            )
+          ];
+        } else {
+          children = <Widget>[
+            SizedBox(
+              child: CircularProgressIndicator(),
+              width: 60,
+              height: 60,
+            ),
+            const Padding(
+              padding: EdgeInsets.only(top: 16),
+              child: Text(
+                'درحال دریافت اطلاعات',
+                style: TextStyle(
+                  fontFamily: "Vazir",
+                  fontSize: 12,
+                ),
+              ),
+            )
+          ];
+        }
+        return Padding(
+          padding: EdgeInsets.all(10),
+          child: Center(
             child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                SizedBox(
-                  height: 20.0,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: children,
+          )),
+        );
+      },
+    )));
+  }
+}
+
+Widget content(BuildContext context, User entry) {
+  return SafeArea(
+    child: Container(
+          color: Colors.white,
+          padding: EdgeInsets.symmetric(vertical: 10,horizontal: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              SizedBox(height: 10,),
+              Text("کسب اطلاعات درباره شهرهای دیگر",
+                textDirection: TextDirection.ltr,
+                style: TextStyle(
+                color: Colors.black87.withOpacity(0.8),
+                fontFamily: "Vazir",
+                fontSize: 15,
+                fontWeight: FontWeight.w600
+              ),),
+              SizedBox(height: 20,),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 24),
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Color(0xffEFEFEF),
+                  borderRadius: BorderRadius.circular(14)
                 ),
-                Icon(
-                  Icons.search,
-                  size: 70,
-                  color: yellow,
-                ),
-                Column(
+                child: Row(
                   children: <Widget>[
-                    Text(
-                      'سلام',
-                      style: TextStyle(
-                          fontSize: 12,
-                          fontFamily: "Vazir",
-                          color: Colors.black),
-                    ),
-                    Text(
-                      'بهزاد فرید اقدم',
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.black,
-                          fontFamily: "Vazir",
-                          fontWeight: FontWeight.bold),
-                    )
+                    Icon(Icons.search),
+                    SizedBox(width: 10,),
+                    Text("Search", style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 19
+                    ),)
                   ],
                 ),
-                Container(
-                  height: 340.0,
-                  width: MediaQuery.of(context).size.width,
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: yellow,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(15),
-                            topRight: Radius.circular(15)),
+              ),
+              
+              
+              SizedBox(height: 20,),
+              Container(
+                height: 250,
+                child: ListView(
+                  shrinkWrap: true,
+                    physics: ClampingScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                  children: <Widget>[
+                    SpecialistTile(
+                        imgAssetPath: giftIcon,
+                        details: "تعداد جوایز پنهان در محصولات",
+                        noOf: 100,
+                        backColor: yellow,
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                              height: 70,
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (_) => WalletPage()));
-                                },
-                                child: Center(
-                                  child: ListView(
-                                    children: <Widget>[
-                                      Text(
-                                        '790',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: _textColor,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 30),
-                                      ),
-                                      Text(
-                                        'اعتبار موجود در کیف پول',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontFamily: "Vazir",
-                                            color: _iconColor,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 13),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )),
-                          Divider(
-                            height: 0.5,
-                            color: Colors.grey,
-                          ),
-                          Table(
-                            border: TableBorder.symmetric(
-                              inside: BorderSide(
-                                  color: Colors.grey,
-                                  style: BorderStyle.solid,
-                                  width: 0.5),
-                            ),
-                            children: [
-                              TableRow(children: [
-                                _actionList('images/ic_send.png', 'محصولات جدید',
-                                    History()),
-                                _actionList('images/ic_money.png', 'سوابق پرداخت',
-                                    History()),
-                              ]),
-                              TableRow(children: [
-                                _actionList('images/ic_transact.png',
-                                    'کدهای اسکن شده', History()),
-                                _actionList(
-                                    'images/ic_reward.png', 'جوایز', History()),
-                              ])
-                            ],
-                          ),
-                        ],
-                      ),
+                      SpecialistTile(
+                        imgAssetPath: diamondIcon,
+                        details: "گنج های پنهان در شهر",
+                        noOf: 40,
+                        backColor: Colors.blue,
+                      ),SpecialistTile(
+                        imgAssetPath: winnerIcon,
+                        details: "جوایز کشف شده",
+                        noOf: 12,
+                        backColor: Color(0xffF69383),
+                      )
+                  ],
+                    
+                      
                     ),
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-// custom action widget
-  Widget _actionList(String iconPath, String desc, Widget route) {
-    return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: GestureDetector(
-          onTap: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (_) => route));
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(
-                height: 10,
               ),
-              Image.asset(
-                iconPath,
-                fit: BoxFit.contain,
-                height: 40.0,
-                width: 40.0,
-                color: _iconColor,
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Text(
-                desc,
-                style: TextStyle(
-                    color: _iconColor,
-                    fontFamily: "Vazir",
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold),
-              )
+              SizedBox(height: 20,),
             ],
           ),
-        ));
+        ),
+      );
+  
+}
+
+class SpecialistTile extends StatelessWidget {
+
+  final String imgAssetPath;
+  final String details;
+  final int noOf;
+  final Color backColor;
+  SpecialistTile({@required this.imgAssetPath,@required this.details
+    ,@required this.noOf, @required this.backColor});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 150,
+      margin: EdgeInsets.only(right: 16),
+      decoration: BoxDecoration(
+        color: backColor,
+        borderRadius: BorderRadius.circular(24)
+      ),
+      padding: EdgeInsets.only(top: 16,right: 16,left: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Text(details, 
+            textDirection: TextDirection.rtl,
+            style: TextStyle(
+            color: Colors.white,
+            fontFamily: "Vazir",
+            fontSize: 14
+          ),),
+          SizedBox(height: 6,),
+          Text(noOf.toString(), 
+            textDirection: TextDirection.rtl,
+            style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontFamily: "Vazir",
+            fontSize: 14
+          ),),
+          SvgPicture.asset(
+                imgAssetPath,
+                height: 100,
+                color: Colors.white,
+              )
+        ],
+      ),
+    );
   }
 }

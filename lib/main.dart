@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'package:explorer/providers/auth.dart';
 import 'package:explorer/splash.dart';
+
 void main() {
   final navigatorKey = GlobalKey<NavigatorState>();
   runApp(

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:explorer/models/treasure.dart';
 import 'package:flutter/material.dart';
 import 'package:explorer/providers/auth.dart';
 import 'package:http/http.dart' as http;
@@ -11,8 +12,36 @@ import 'package:explorer/models/item.dart';
 
 class ItemProvider {
   
-  Future<List<Item>> getItems() async {
-    final url = 'http://194.5.205.107:3000/app/items';
+ static Future<List<Item>> getItems(int offset, int limit) async {
+    final url = 'http://194.5.205.107:3000/app/items?offset=$offset&limit=$limit';
+    String token = await getToken();
+    List<Item> items;
+    final response = await http.get( url, 
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+
+    
+    if(response.statusCode == 401)
+    {
+        AuthProvider auth = new AuthProvider();
+        auth.logOut();
+    }
+    
+    final responseJson = json.decode(response.body);
+    if (response.statusCode == 200) {
+      items = (responseJson as List)
+          .map((data) => new Item.fromJson(data))
+          .toList();
+      return items;
+    }
+    return items;
+  }
+
+  static Future<List<Item>> getGiftItems(int offset, int limit) async {
+    final url = 'http://194.5.205.107:3000/app/gift_items?offset=$offset&limit=$limit';
     String token = await getToken();
     List<Item> items;
     final response = await http.get( url, 
@@ -106,13 +135,42 @@ class ItemProvider {
     return items;
   }
 
+
+Future<List<Treasure>> getTreasures() async {
+    final url = 'http://194.5.205.107:3000/app/treasures';
+    String token = await getToken();
+    List<Treasure> items;
+    final response = await http.get( url, 
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    
+    if(response.statusCode == 401)
+    {
+        AuthProvider auth = new AuthProvider();
+        auth.logOut();
+    }
+    
+    final responseJson = json.decode(response.body);
+    if (response.statusCode == 200) {
+      items = (responseJson as List)
+          .map((data) => new Treasure.fromJson(data))
+          .toList();
+      return items;
+    }
+    return items;
+  }
+
+
   storeUserData(apiResponse) async {
     SharedPreferences storage = await SharedPreferences.getInstance();
     await storage.setString('token', apiResponse['access_token']);
     await storage.setString('name', apiResponse['user']['full_name']);
   }
 
-  Future<String> getToken() async {
+  static Future<String> getToken() async {
     SharedPreferences storage = await SharedPreferences.getInstance();
     String token = storage.getString('token');
     return token;
