@@ -51,7 +51,8 @@ class SettingsPage extends StatelessWidget {
                                   if (snapshot.hasData) {
                                     return _itemBuilder(context, snapshot.data);
                                   } else {
-                                    return SizedBox(
+                                    return 
+                                    SizedBox(
                                       child: CircularProgressIndicator(),
                                       width: 60,
                                       height: 60,

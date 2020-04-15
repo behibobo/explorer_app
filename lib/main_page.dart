@@ -1,5 +1,6 @@
 import 'package:explorer/gift_list.dart';
 import 'package:explorer/home.dart';
+import 'package:explorer/loplob.dart';
 import 'package:explorer/map_page.dart';
 import 'package:explorer/profile.dart';
 import 'package:explorer/scan_result.dart';
@@ -45,7 +46,7 @@ class _MainPageState extends State<MainPage> {
           index: currentIndex,
           children: <Widget>[
             Home(),
-            GiftList(),
+            Loplob(),
             GiftList(),
             MapPage(),
             Profile()

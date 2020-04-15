@@ -54,6 +54,7 @@ class _MapPageState extends State<MapPage> {
               ),
             ));
           }
+          
           return Scaffold(
             appBar: mainAppbar(context, "کاوشگر"),
             body: Padding(
