@@ -135,7 +135,7 @@ class TreasureList extends StatelessWidget {
         pageSize: PAGE_SIZE,
         itemBuilder: this._itemBuilder,
         pageFuture: (pageIndex) =>
-            ItemProvider.getTrasures(pageIndex * PAGE_SIZE, PAGE_SIZE));
+            ItemProvider.getFoundTreasures(pageIndex * PAGE_SIZE, PAGE_SIZE));
   }
 
   Widget _itemBuilder(context, FoundTrasure entry, _) {
@@ -191,7 +191,7 @@ class LoplobList extends StatelessWidget {
         pageSize: PAGE_SIZE,
         itemBuilder: this._itemBuilder,
         pageFuture: (pageIndex) =>
-            ItemProvider.getLoplobs(pageIndex * PAGE_SIZE, PAGE_SIZE));
+            ItemProvider.getUserLoplobs(pageIndex * PAGE_SIZE, PAGE_SIZE));
   }
 
   Widget _itemBuilder(context, Loplob entry, _) {

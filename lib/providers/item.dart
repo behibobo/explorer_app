@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:explorer/models/found_treasure.dart';
 import 'package:explorer/models/loplob.dart';
+import 'package:explorer/models/loplobs.dart';
 import 'package:explorer/models/treasure.dart';
 import 'package:flutter/material.dart';
 import 'package:explorer/providers/auth.dart';
@@ -14,7 +15,7 @@ import 'package:explorer/models/item.dart';
 class ItemProvider {
   
  static Future<List<Item>> getItems(int offset, int limit) async {
-    final url = 'http://10.0.2.2:3000/app/items?offset=$offset&limit=$limit';
+    final url = 'http://194.5.205.107:3000/app/items?offset=$offset&limit=$limit';
     String token = await getToken();
     List<Item> items;
     final response = await http.get( url, 
@@ -42,7 +43,7 @@ class ItemProvider {
   }
 
   static Future<List<Item>> getGiftItems(int offset, int limit) async {
-    final url = 'http://10.0.2.2:3000/app/gift_items?offset=$offset&limit=$limit';
+    final url = 'http://194.5.205.107:3000/app/gift_items?offset=$offset&limit=$limit';
     String token = await getToken();
     List<Item> items;
     final response = await http.get( url, 
@@ -71,7 +72,7 @@ class ItemProvider {
 
 
   Future<Map> scanItem(String barcode) async {
-    final url = 'http://10.0.2.2:3000/app/scan_item';
+    final url = 'http://194.5.205.107:3000/app/scan_item';
     String token = await getToken();
     
     Map<String, String> body = {
@@ -110,7 +111,7 @@ class ItemProvider {
   
 
   Future<List<Item>> getLastItems() async {
-    final url = 'http://10.0.2.2:3000/app/last_items';
+    final url = 'http://194.5.205.107:3000/app/last_items';
     String token = await getToken();
     List<Item> items;
     final response = await http.get( url, 
@@ -138,7 +139,7 @@ class ItemProvider {
 
 
 Future<List<Treasure>> getTreasures() async {
-    final url = 'http://10.0.2.2:3000/app/treasures';
+    final url = 'http://194.5.205.107:3000/app/treasures';
     String token = await getToken();
     List<Treasure> items;
     final response = await http.get( url, 
@@ -169,8 +170,8 @@ Future<List<Treasure>> getTreasures() async {
 
 
 
-  static Future<List<FoundTrasure>> getTrasures(int offset, int limit) async {
-    final url = 'http://10.0.2.2:3000/app/found_treasures?offset=$offset&limit=$limit';
+  static Future<List<FoundTrasure>> getFoundTreasures(int offset, int limit) async {
+    final url = 'http://194.5.205.107:3000/app/found_treasures?offset=$offset&limit=$limit';
     String token = await getToken();
     List<FoundTrasure> items;
     final response = await http.get( url, 
@@ -197,8 +198,8 @@ Future<List<Treasure>> getTreasures() async {
     return items;
   }
 
-  static Future<List<Loplob>> getLoplobs(int offset, int limit) async {
-    final url = 'http://10.0.2.2:3000/app/purchased_loplobs?offset=$offset&limit=$limit';
+  static Future<List<Loplob>> getUserLoplobs(int offset, int limit) async {
+    final url = 'http://194.5.205.107:3000/app/purchased_loplobs?offset=$offset&limit=$limit';
     String token = await getToken();
     List<Loplob> items;
     final response = await http.get( url, 
@@ -223,6 +224,61 @@ Future<List<Treasure>> getTreasures() async {
       return items;
     }
     return items;
+  }
+
+
+  Future<List<Loplobs>> getLoplobs() async {
+    final url = 'http://194.5.205.107:3000/app/loplobs?required_credit=1000';
+    String token = await getToken();
+    List<Loplobs> items;
+    final response = await http.get( url, 
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    
+    if(response.statusCode == 401)
+    {
+        AuthProvider auth = new AuthProvider();
+        auth.logOut();
+    }
+    
+    final responseJson = json.decode(response.body);
+    if (response.statusCode == 200) {
+      items = (responseJson as List)
+          .map((data) => new Loplobs.fromJson(data))
+          .toList();
+      return items;
+    }
+    return items;
+  }
+
+  Future<bool> purchaseloplob(String uuid) async {
+    final url = 'http://194.5.205.107:3000/app/loplobs';
+    String token = await getToken();
+
+    Map body = {
+      "uuid": uuid,
+      "required_credit": 1000,
+    };
+
+    final jsonBody = json.encode(body);
+
+
+    final response = await http.post( url, 
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    },body: jsonBody,);
+    
+    
+    final responseJson = json.decode(response.body);
+    if (response.statusCode == 200) {
+      return true;
+    }
+    return false;
   }
 
   storeUserData(apiResponse) async {
