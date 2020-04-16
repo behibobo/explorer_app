@@ -1,113 +1,121 @@
-import 'package:explorer/models/user.dart';
-import 'package:flutter/cupertino.dart';
+import 'dart:developer';
+
+import 'package:explorer/all_loplobs.dart';
+import 'package:explorer/history.dart';
+import 'package:explorer/providers/item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:flutter_svg/svg.dart';
+
+final String diamondIcon = 'images/diamond.svg';
+final String loplobIcon = 'images/loplob.svg';
 
 class ScanResult extends StatefulWidget {
-  final String message;
-  ScanResult({Key key, this.message}) : super(key: key);
+  Map res;
+
+  ScanResult(this.res);
   @override
-  _ScanResultState createState() => _ScanResultState();
+  _LoplobState createState() => _LoplobState();
 }
 
-class _ScanResultState extends State<ScanResult> with TickerProviderStateMixin {
-  AnimationController animController;
-  Animation<double> openOptions;
-  
-  List<User> users = [];
-
-  getUsers() async {
-    setState(() {
-      users = [];
-    });
-  }
-
+class _LoplobState extends State<ScanResult> with TickerProviderStateMixin {
+  static AudioCache player = new AudioCache();
+    
   @override
   void initState() {
-    animController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
-    openOptions = Tween(begin: 0.0, end: 300.0).animate(animController);
-    getUsers();
     super.initState();
+    const alarmAudioPath = "sound.mp3";
+    player.play(alarmAudioPath);
+  }
+
+  
+
+  Future<void> purchase(uuid, requiredCredit) async {
+    ItemProvider prov = new ItemProvider();
+    Map res = await prov.purchaseloplob(uuid, requiredCredit);
+    log(res["value"].toString());
   }
 
   @override
   Widget build(BuildContext context) {
+    String icon;
+    Color color;
+
+    if (widget.res["success"]) {
+      icon = 'images/happy.svg';
+      color = Colors.green;
+
+    } else {
+      icon = 'images/sad.svg';
+      color = Colors.red;
+    }
     return Scaffold(
-        backgroundColor: Colors.grey[100],
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          brightness: Brightness.light,
-          iconTheme: IconThemeData(color: Colors.black),
-          elevation: 0.0,
-        ),
-        body: SafeArea(
-          child: LayoutBuilder(
-            builder: (b, constraints) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: Column(
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          Container(
-                            padding: const EdgeInsets.all(8.0),
-                            height: 120,
-                            width: 120,
-                            decoration: BoxDecoration(
-                                color: Colors.yellowAccent,
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.black12,
-                                      offset: Offset(0, 3),
-                                      blurRadius: 6)
-                                ],
-                                border: Border.all(
-                                    width: 8.0, color: Colors.white)),
-                            child: Image.asset("images/map.jpg"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 72.0, vertical: 16.0),
-                            child: Column(children: <Widget>[
-                              Text(
-                                "نام محصول",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16.0),
-                                textAlign: TextAlign.center,
-                              ),
-                              Text(
-                                "نام برند",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
-                              )
-                            ]),
-                          )
-                        ],
-                      ),
-                      Divider(),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20.0, vertical: 16.0),
-                        child: Text(
-                          widget.message,
-                          style: TextStyle(
-                            fontSize: 15.0,
-                            fontFamily: 'Sahel',
-                          ),
-                          textDirection: TextDirection.rtl,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
+          iconTheme: IconThemeData(
+            color: Colors.black,
           ),
-        ));
+          backgroundColor: Colors.white,
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.black),
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (_) => AllLoplobs()));
+              }),
+          elevation: 0.0,
+          title: Text("",
+              style: TextStyle(
+                  fontFamily: "Vazir", fontSize: 14, color: Colors.black)),
+          centerTitle: true,
+        ),
+        body: SingleChildScrollView(
+            child: Padding(
+                padding: EdgeInsets.all(10),
+                child: Center(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    SvgPicture.asset(
+                      icon,
+                      width: 150,
+                      height: 150,
+                      color: color,
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Center(
+                        child: Text(
+                      widget.res["message"],
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontFamily: "Vazir", 
+                      fontSize: 12),
+                    )),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    FlatButton(
+                        shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(30.0),
+                        ),
+                        color: Colors.blue,
+                        onPressed: () {
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => History()));
+                        },
+                        child: Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                          child: Text(
+                            "لیست خریدها",
+                            style: TextStyle(
+                              fontFamily: "Vazir",
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ))
+                  ],
+                )))));
   }
 }

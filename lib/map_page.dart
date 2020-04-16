@@ -32,7 +32,6 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
-    log(items.length.toString());
     var markers = <Marker>[];
 
     return FutureBuilder(
@@ -86,11 +85,12 @@ class _MapPageState extends State<MapPage> {
             ),
           );
         } else {
-          SizedBox(
+          return Center(
+            child: SizedBox(
             child: CircularProgressIndicator(),
             width: 60,
             height: 60,
-          );
+          ));
         }
       },
     );

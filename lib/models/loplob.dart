@@ -1,21 +1,16 @@
 class Loplob {
-    int id;
-    int value;
-    String date;
+    int requiredCredit;
     String uuid;
-    bool won;
+    int value;
     Loplob({
-      this.id,
-      this.value,
-      this.date,
       this.uuid,
-      this.won,
+      this.requiredCredit,
+      this.value,
     });
 
     factory Loplob.fromJson(Map<String, dynamic> json) => new Loplob(
-      value: json["value"],
-      date: json["date"],
       uuid: json["uuid"],
-      won: json["won"],
+      requiredCredit: json["required_credit"],
+      value: json["value"],
     );
 }

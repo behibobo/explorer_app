@@ -3,6 +3,7 @@ import 'package:explorer/models/user.dart';
 import 'package:explorer/settings/payment_history.dart';
 import 'package:explorer/settings/settings_page.dart';
 import 'package:explorer/styles/main.dart';
+import 'package:explorer/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -19,15 +20,15 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   @override
-
   Future<User> _getProfile() async {
     return await Provider.of<AuthProvider>(context).profile();
   }
 
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: 
-      FutureBuilder<User>(
+    return Scaffold(
+      appBar: mainAppbar(context, "پروفایل"),
+      body: SingleChildScrollView(
+        child: FutureBuilder<User>(
       future: _getProfile(),
       builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
         List<Widget> children;
@@ -71,14 +72,14 @@ class _ProfileState extends State<Profile> {
         return Padding(
           padding: EdgeInsets.all(10),
           child: Center(
-            child: Column(
+              child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: children,
           )),
         );
       },
-    ));
+    )));
   }
 }
 
@@ -87,7 +88,7 @@ Container _paypalCard(context, credit) {
     margin: EdgeInsets.all(15),
     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 11),
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: Colors.lightBlue,
       border:
           Border.all(color: Colors.white, width: 0, style: BorderStyle.solid),
       borderRadius: BorderRadius.all(
@@ -95,7 +96,7 @@ Container _paypalCard(context, credit) {
       ),
       boxShadow: [
         BoxShadow(
-            color: Colors.grey[200],
+            color: Colors.grey[300],
             offset: Offset(0, 3),
             blurRadius: 6,
             spreadRadius: 1)
@@ -107,18 +108,17 @@ Container _paypalCard(context, credit) {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                Image.asset('images/logo.png', height: 20),
-                SizedBox(width: 20),
+            
+                Icon(Icons.wallpaper),
                 Text(
                   'موجودی کیف پول',
                   style: TextStyle(
-                      color: Colors.blue, fontFamily: "Vazir", fontSize: 12),
+                      color: Colors.white, 
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "Vazir", 
+                      fontSize: 12),
                 ),
-              ],
-            ),
-            Icon(Icons.info_outline, size: 18)
+              
           ],
         ),
         SizedBox(height: 20),
@@ -133,13 +133,16 @@ Container _paypalCard(context, credit) {
                   children: <Widget>[
                     Text(
                       'ریال',
-                      style: TextStyle(fontFamily: "Vazir", fontSize: 25),
+                      style: TextStyle(fontFamily: "Vazir", 
+                      color: Colors.white,
+                      fontSize: 25),
                     ),
                     SizedBox(width: 13),
                     Text(
                       '${credit}',
                       style: TextStyle(
                           fontFamily: "Vazir",
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 35),
                     ),
@@ -156,12 +159,14 @@ Container _paypalCard(context, credit) {
             SizedBox(
               height: 25,
               child: FlatButton(
-                color: yellow,
-                textColor: Colors.blue,
+                color: Colors.black,
+                textColor: Colors.white,
                 child: Text(
                   "گزارش تراکنش ها",
                   style: TextStyle(
-                      fontFamily: "Vazir", color: Colors.black54, fontSize: 12),
+                      fontFamily: "Vazir", 
+                      color: Colors.white, 
+                      fontSize: 11),
                 ),
                 onPressed: () {
                   Navigator.of(context).push(
@@ -196,7 +201,6 @@ ListView _activityList(context, user) {
         margin: EdgeInsets.only(bottom: 15),
         decoration: _tileDecoration(),
         child: ListTile(
-          
           leading: Icon(
             Icons.chevron_left,
           ),
@@ -206,28 +210,30 @@ ListView _activityList(context, user) {
             style: TextStyle(
                 fontFamily: "Vazir",
                 fontWeight: FontWeight.w500,
-                color: Colors.blue),
+                fontSize: 12,
+                color: Colors.black),
           ),
           subtitle: Text(
             ' تنظیمات حساب کاربری',
             textDirection: TextDirection.rtl,
-            style: TextStyle(fontFamily: "Vazir", fontWeight: FontWeight.w300),
+            style: TextStyle(
+                fontFamily: "Vazir", fontSize: 11, fontWeight: FontWeight.w300),
           ),
           trailing: SvgPicture.asset(
             settingIcon,
-            width: 30,
-            height: 30,
-            color: Colors.grey,
+            width: 20,
+            height: 20,
+            color: Colors.blue,
           ),
           onTap: () {
             Navigator.of(context).push(
-                    MaterialPageRoute<Null>(
-                      builder: (BuildContext context) {
-                        return SettingsPage();
-                      },
-                      fullscreenDialog: true,
-                    ),
-                  );
+              MaterialPageRoute<Null>(
+                builder: (BuildContext context) {
+                  return SettingsPage();
+                },
+                fullscreenDialog: true,
+              ),
+            );
           },
         ),
       ),
@@ -235,7 +241,6 @@ ListView _activityList(context, user) {
         margin: EdgeInsets.only(bottom: 15),
         decoration: _tileDecoration(),
         child: ListTile(
-          
           leading: Icon(
             Icons.chevron_left,
           ),
@@ -245,28 +250,31 @@ ListView _activityList(context, user) {
             style: TextStyle(
                 fontFamily: "Vazir",
                 fontWeight: FontWeight.w500,
-                color: Colors.blue),
+                fontSize: 12,
+                color: Colors.black),
           ),
           subtitle: Text(
             'لیست کدهای اسکن شده',
             textDirection: TextDirection.rtl,
-            style: TextStyle(fontFamily: "Vazir", fontWeight: FontWeight.w300),
+            style: TextStyle(
+                fontFamily: "Vazir", fontSize: 11, 
+                fontWeight: FontWeight.w300),
           ),
           trailing: SvgPicture.asset(
             codeIcon,
-            width: 25,
-            height: 25,
-            color: Colors.grey,
+            width: 20,
+            height: 20,
+            color: Colors.blue,
           ),
           onTap: () {
             Navigator.of(context).push(
-                    MaterialPageRoute<Null>(
-                      builder: (BuildContext context) {
-                        return History();
-                      },
-                      fullscreenDialog: true,
-                    ),
-                  );
+              MaterialPageRoute<Null>(
+                builder: (BuildContext context) {
+                  return History();
+                },
+                fullscreenDialog: true,
+              ),
+            );
           },
         ),
       ),
@@ -274,7 +282,6 @@ ListView _activityList(context, user) {
         margin: EdgeInsets.only(bottom: 15),
         decoration: _tileDecoration(),
         child: ListTile(
-          
           leading: Icon(
             Icons.chevron_left,
           ),
@@ -283,29 +290,31 @@ ListView _activityList(context, user) {
             textDirection: TextDirection.rtl,
             style: TextStyle(
                 fontFamily: "Vazir",
+                fontSize: 12,
                 fontWeight: FontWeight.w500,
-                color: Colors.blue),
+                color: Colors.black),
           ),
           subtitle: Text(
             ' واریز موجودی کیف پول به حساب بانکی',
             textDirection: TextDirection.rtl,
-            style: TextStyle(fontFamily: "Vazir", fontWeight: FontWeight.w300),
+            style: TextStyle(
+                fontFamily: "Vazir", fontSize: 11, fontWeight: FontWeight.w300),
           ),
           trailing: SvgPicture.asset(
             withdrawIcon,
-            width: 30,
-            height: 30,
-            color: Colors.grey,
+            width: 20,
+            height: 20,
+            color: Colors.blue,
           ),
           onTap: () {
             Navigator.of(context).push(
-                    MaterialPageRoute<Null>(
-                      builder: (BuildContext context) {
-                        return History();
-                      },
-                      fullscreenDialog: true,
-                    ),
-                  );
+              MaterialPageRoute<Null>(
+                builder: (BuildContext context) {
+                  return History();
+                },
+                fullscreenDialog: true,
+              ),
+            );
           },
         ),
       ),

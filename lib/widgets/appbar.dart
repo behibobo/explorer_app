@@ -13,7 +13,9 @@ Widget mainAppbar(BuildContext context, String text) {
             .push(MaterialPageRoute(builder: (_) => MainPage()));
       }),
     elevation: 0.0,
-    title: Text(text, style: TextStyle(fontFamily: "Vazir", fontSize: 14, color: Colors.black)),
+    title: Text(text, style: TextStyle(fontFamily: "Vazir", 
+    fontWeight: FontWeight.bold,
+    fontSize: 12, color: Colors.black)),
     centerTitle: true,
     // actions: <Widget>[
     //   IconButton(

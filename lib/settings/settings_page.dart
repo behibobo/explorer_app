@@ -20,8 +20,9 @@ class SettingsPage extends StatelessWidget {
           backgroundColor: Colors.white,
           elevation: 0.0,
           title: Text(
-            "Accounts",
-            style: TextStyle(color: Colors.black),
+            "حساب کاربری",
+            style: TextStyle(color: Colors.black,
+            fontFamily: "Vazir", fontSize: 12, fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
           // actions: <Widget>[
@@ -51,12 +52,12 @@ class SettingsPage extends StatelessWidget {
                                   if (snapshot.hasData) {
                                     return _itemBuilder(context, snapshot.data);
                                   } else {
-                                    return 
-                                    SizedBox(
+                                    return Center(
+                                    child: SizedBox(
                                       child: CircularProgressIndicator(),
                                       width: 60,
                                       height: 60,
-                                    );
+                                    ));
                                   }
                                 })))))));
   }

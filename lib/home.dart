@@ -1,6 +1,7 @@
 import 'package:explorer/gift_list.dart';
 import 'package:explorer/history.dart';
 import 'package:explorer/models/item.dart';
+import 'package:explorer/models/treasure.dart';
 import 'package:explorer/models/user.dart';
 import 'package:explorer/widgets/appbar.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,18 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     return Scaffold(
       appBar: mainAppbar(context, "کاوشگر"),
       body: SingleChildScrollView(
+        child: 
+        Container(
+          height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          image: DecorationImage(
+            colorFilter: new ColorFilter.mode(
+                Colors.black.withOpacity(0.1), BlendMode.dstATop),
+            image: AssetImage('images/map.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: FutureBuilder<User>(
       future: _getProfile(),
       builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
@@ -84,73 +97,59 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           )),
         );
       },
-    )));
+    ))));
   }
 }
 
 Widget content(BuildContext context, User entry) {
   return SafeArea(
     child: Container(
-          color: Colors.white,
+          color: Colors.white10,
           padding: EdgeInsets.symmetric(vertical: 10,horizontal: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
-              SizedBox(height: 10,),
-              Text("کسب اطلاعات درباره شهرهای دیگر",
-                textDirection: TextDirection.ltr,
-                style: TextStyle(
-                color: Colors.black87.withOpacity(0.8),
-                fontFamily: "Vazir",
-                fontSize: 15,
-                fontWeight: FontWeight.w600
-              ),),
-              SizedBox(height: 20,),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 24),
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Color(0xffEFEFEF),
-                  borderRadius: BorderRadius.circular(14)
-                ),
-                child: Row(
-                  children: <Widget>[
-                    Icon(Icons.search),
-                    SizedBox(width: 10,),
-                    Text("Search", style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 19
-                    ),)
-                  ],
-                ),
-              ),
-              
               
               SizedBox(height: 20,),
               Container(
-                height: 250,
+                height: 210,
                 child: ListView(
                   shrinkWrap: true,
                     physics: ClampingScrollPhysics(),
                     scrollDirection: Axis.horizontal,
                   children: <Widget>[
-                    SpecialistTile(
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => GiftList()));
+                      },
+                    child: SpecialistTile(
                         imgAssetPath: giftIcon,
                         details: "تعداد جوایز پنهان در محصولات",
                         noOf: 100,
                         backColor: yellow,
-                      ),
-                      SpecialistTile(
+                      )),
+                      GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => TreasureList()));
+                      },
+                    child: SpecialistTile(
                         imgAssetPath: diamondIcon,
                         details: "گنج های پنهان در شهر",
                         noOf: 40,
                         backColor: Colors.blue,
-                      ),SpecialistTile(
+                      )),GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => TreasureList()));
+                      },
+                    child: SpecialistTile(
                         imgAssetPath: winnerIcon,
                         details: "جوایز کشف شده",
                         noOf: 12,
                         backColor: Color(0xffF69383),
-                      )
+                      ))
                   ],
                     
                       
@@ -180,34 +179,39 @@ class SpecialistTile extends StatelessWidget {
       margin: EdgeInsets.only(right: 16),
       decoration: BoxDecoration(
         color: backColor,
-        borderRadius: BorderRadius.circular(24)
+        borderRadius: BorderRadius.circular(24),
       ),
       padding: EdgeInsets.only(top: 16,right: 16,left: 16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Text(details, 
             textDirection: TextDirection.rtl,
-            style: TextStyle(
-            color: Colors.white,
-            fontFamily: "Vazir",
-            fontSize: 14
-          ),),
-          SizedBox(height: 6,),
-          Text(noOf.toString(), 
-            textDirection: TextDirection.rtl,
+            textAlign: TextAlign.center,
             style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
             fontFamily: "Vazir",
-            fontSize: 14
+            fontSize: 12
           ),),
-          SvgPicture.asset(
+          SizedBox(height: 6,),
+          Text(noOf.toString(), 
+            textDirection: TextDirection.rtl,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontFamily: "Vazir",
+            fontSize: 12
+          ),),
+          Center(
+            child: SvgPicture.asset(
                 imgAssetPath,
-                height: 100,
+                height: 80,
                 color: Colors.white,
-              )
+                
+              ))
         ],
       ),
     );

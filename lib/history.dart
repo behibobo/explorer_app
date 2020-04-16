@@ -1,17 +1,21 @@
-import 'package:explorer/models/loplob.dart';
+import 'package:explorer/loplob_result.dart';
+import 'package:explorer/styles/main.dart';
 import 'package:explorer/models/found_treasure.dart';
-import 'package:explorer/widgets/appbar.dart';
+import 'package:explorer/models/user_loplob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pagewise/flutter_pagewise.dart';
 import 'models/item.dart';
 import 'providers/item.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_svg/svg.dart';
 
 final String diamondIcon = 'images/diamond.svg';
 final String loplobIcon = 'images/loplob.svg';
-
+final String giftIcon = 'images/gifts.svg';
+final String homeIcon = 'images/home.svg';
+final String personIcon = 'images/person.svg';
 final String codeIcon = 'images/qrcode.svg';
+final String happyIcon = 'images/happy.svg';
+final String sadIcon = 'images/sad.svg';
 
 class History extends StatelessWidget {
   @override
@@ -32,12 +36,15 @@ class PagewiseSliverListExample extends StatelessWidget {
               iconTheme: IconThemeData(
                 color: Colors.black,
               ),
-              backgroundColor: Colors.white,
+              backgroundColor: yellow,
               elevation: 0.0,
               title: Text(
                 "خریدهای من",
                 style: TextStyle(
-                    fontFamily: "Vazir", fontSize: 14, color: Colors.black),
+                    fontFamily: "Vazir",
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
               ),
               centerTitle: true,
               // actions: <Widget>[
@@ -50,18 +57,69 @@ class PagewiseSliverListExample extends StatelessWidget {
               //   )
               // ],
               bottom: TabBar(tabs: [
-                Tab(child: Text('خریدها', style: TextStyle(
-                  fontFamily: "Vazir",
-                  color: Colors.black
-                ),) ),
-                Tab(child: Text('گنج ها', style: TextStyle(
-                  fontFamily: "Vazir",
-                  color: Colors.black
-                ))),
-                Tab(child: Text('لپ لب ها', style: TextStyle(
-                  fontFamily: "Vazir",
-                  color: Colors.black
-                )))
+                Tab(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text(
+                      'خریدها',
+                      style: TextStyle(
+                        fontFamily: "Vazir",
+                        color: Colors.black,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SvgPicture.asset(
+                      codeIcon,
+                      width: 20,
+                      height: 20,
+                      color: Colors.black,
+                    )
+                  ],
+                )),
+                Tab(
+                    child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text(
+                      'گنج ها',
+                      style: TextStyle(
+                        fontFamily: "Vazir",
+                        color: Colors.black,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SvgPicture.asset(
+                      diamondIcon,
+                      width: 20,
+                      height: 20,
+                      color: Colors.black,
+                    )
+                  ],
+                )),
+                Tab(
+                    child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text(
+                      'لپ لب ها',
+                      style: TextStyle(
+                        fontFamily: "Vazir",
+                        color: Colors.black,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SvgPicture.asset(
+                      loplobIcon,
+                      width: 20,
+                      height: 20,
+                      color: Colors.black,
+                    )
+                  ],
+                )),
               ]),
             ),
             body: TabBarView(
@@ -87,6 +145,22 @@ class ItemsList extends StatelessWidget {
   }
 
   Widget _itemBuilder(context, Item entry, _) {
+    Widget leading;
+    if(entry.hasGift) {
+      leading = SvgPicture.asset(
+              happyIcon,
+              width: 50,
+              height: 50,
+              color: Colors.lightGreen[200],
+            );
+    } else {
+      leading = SvgPicture.asset(
+              sadIcon,
+              width: 40,
+              height: 40,
+              color: Colors.red[200],
+            );
+    }
     return Column(
       children: <Widget>[
         ListTile(
@@ -124,8 +198,6 @@ class ItemsList extends StatelessWidget {
   }
 }
 
-
-
 class TreasureList extends StatelessWidget {
   static const int PAGE_SIZE = 10;
 
@@ -143,11 +215,11 @@ class TreasureList extends StatelessWidget {
       children: <Widget>[
         ListTile(
             trailing: SvgPicture.asset(
-                diamondIcon,
-                width: 24,
-                height: 24,
-                color: Colors.black,
-              ),
+              diamondIcon,
+              width: 24,
+              height: 24,
+              color: Colors.black,
+            ),
             leading: SvgPicture.asset(
               codeIcon,
               width: 20,
@@ -181,7 +253,6 @@ class TreasureList extends StatelessWidget {
   }
 }
 
-
 class LoplobList extends StatelessWidget {
   static const int PAGE_SIZE = 10;
 
@@ -194,22 +265,33 @@ class LoplobList extends StatelessWidget {
             ItemProvider.getUserLoplobs(pageIndex * PAGE_SIZE, PAGE_SIZE));
   }
 
-  Widget _itemBuilder(context, Loplob entry, _) {
+  Widget _itemBuilder(context, UserLoplob entry, _) {
+    Widget leading;
+    if(entry.won) {
+      leading = SvgPicture.asset(
+              happyIcon,
+              width: 50,
+              height: 50,
+              color: Colors.lightGreen[200],
+            );
+    } else {
+      leading = SvgPicture.asset(
+              sadIcon,
+              width: 40,
+              height: 40,
+              color: Colors.red[200],
+            );
+    }
     return Column(
       children: <Widget>[
         ListTile(
             trailing: SvgPicture.asset(
-                loplobIcon,
-                width: 24,
-                height: 24,
-                color: Colors.black,
-              ),
-            leading: SvgPicture.asset(
-              codeIcon,
-              width: 20,
-              height: 20,
+              loplobIcon,
+              width: 24,
+              height: 24,
               color: Colors.black,
             ),
+            leading: leading,
             title: Text(
               '${entry.value}',
               textDirection: TextDirection.rtl,
