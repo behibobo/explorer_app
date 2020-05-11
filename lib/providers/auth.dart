@@ -102,7 +102,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<bool> update(
-    String fname, String lname, String dob, int gender) async {
+    String fname, String lname, String dob, int gender, String state, String city) async {
     final url = "$api/user";
 
     String token = await getToken();
@@ -112,6 +112,8 @@ class AuthProvider with ChangeNotifier {
       "last_name": lname,
       "gender": gender.toString(),
       "dob": dob,
+      "state": state,
+      "city": city,
     };
 
     final jsonBody = json.encode(body);

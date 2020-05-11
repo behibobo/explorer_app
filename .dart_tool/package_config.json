@@ -80,6 +80,12 @@
       "languageVersion": "2.0"
     },
     {
+      "name": "dropdownfield",
+      "rootUri": "file:///Users/bobo/flutter/.pub-cache/hosted/pub.dartlang.org/dropdownfield-1.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
       "name": "flare_dart",
       "rootUri": "file:///Users/bobo/flutter/.pub-cache/hosted/pub.dartlang.org/flare_dart-2.3.4",
       "packageUri": "lib/",
@@ -482,7 +488,7 @@
       "languageVersion": "2.1"
     }
   ],
-  "generated": "2020-04-15T21:50:40.691403Z",
+  "generated": "2020-04-18T18:05:39.407821Z",
   "generator": "pub",
   "generatorVersion": "2.7.0"
 }

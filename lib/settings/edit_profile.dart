@@ -1,12 +1,9 @@
-import 'dart:developer';
 import 'package:explorer/models/user.dart';
-import 'package:explorer/profile.dart';
 import 'package:explorer/providers/auth.dart';
-import 'package:explorer/settings/settings_page.dart';
+import 'package:explorer/providers/city_repo.dart';
 import 'package:explorer/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:persian_datepicker/persian_datepicker.dart';
-import 'package:provider/provider.dart';
 
 class EditProfile extends StatefulWidget {
   final User user;
@@ -27,11 +24,17 @@ class _EditProfileState extends State<EditProfile>
   String lastName;
   String dob;
 
+  List<String> _states = ["Choose a state"];
+  List<String> _cities = ["Choose .."];
+  String _selectedState = "Choose a state";
+  String _selectedCity = "Choose ..";
+  CityRepo repo = CityRepo();
   @override
   void initState() {
     persianDatePicker = PersianDatePicker(
             controller: textEditingController, datetime: widget.user.dob)
         .init();
+    _states = List.from(_states)..addAll(repo.getStates());
     super.initState();
     this.gender = widget.user.gender;
   }
@@ -42,12 +45,25 @@ class _EditProfileState extends State<EditProfile>
     });
   }
 
+  void _onSelectedState(String value) {
+    setState(() {
+      _selectedCity = "Choose ..";
+      _cities = ["Choose .."];
+      _selectedState = value;
+      _cities = List.from(_cities)..addAll(repo.getLocalByState(value));
+    });
+  }
+
+  void _onSelectedCity(String value) {
+    setState(() => _selectedCity = value);
+  }
 
   Future<void> _update() async {
     final form = _formKey.currentState;
     if (form.validate()) {
       AuthProvider prov = new AuthProvider();
-      bool res = await prov.update(firstName, lastName, dob, gender);
+      bool res = await prov.update(firstName, lastName,
+       dob, gender, _selectedState, _selectedCity);
       if (res) {
         _scaffoldKey.currentState.showSnackBar(new SnackBar(
             content: Text(
@@ -65,12 +81,12 @@ class _EditProfileState extends State<EditProfile>
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      key: _scaffoldKey,
+        key: _scaffoldKey,
         appBar: AppBar(
           iconTheme: IconThemeData(
             color: Colors.black,
           ),
-          
+
           backgroundColor: Colors.white,
           elevation: 0.0,
           title: Text(
@@ -92,7 +108,8 @@ class _EditProfileState extends State<EditProfile>
           //   )
           // ],
         ),
-        body: Form(
+        body: SingleChildScrollView(
+          child: Form(
             key: _formKey,
             child: Container(
               height: MediaQuery.of(context).size.height,
@@ -283,6 +300,46 @@ class _EditProfileState extends State<EditProfile>
                   SizedBox(
                     height: 20.0,
                   ),
+                  Container(
+                      width: MediaQuery.of(context).size.width,
+                      margin: const EdgeInsets.only(
+                          left: 40.0, right: 40.0, top: 0.0),
+                      alignment: Alignment.center,
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        items: _states.map((String dropDownStringItem) {
+                          return DropdownMenuItem<String>(
+                            value: dropDownStringItem,
+                            child: Text(dropDownStringItem),
+                          );
+                        }).toList(),
+                        onChanged: (value) => _onSelectedState(value),
+                        value: _selectedState,
+                      )),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    margin: const EdgeInsets.only(
+                        left: 40.0, right: 40.0, top: 0.0),
+                    alignment: Alignment.center,
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      items: _cities.map((String dropDownStringItem) {
+                        return DropdownMenuItem<String>(
+                          value: dropDownStringItem,
+                          child: Text(dropDownStringItem),
+                        );
+                      }).toList(),
+                      // onChanged: (value) => print(value),
+                      onChanged: (value) => _onSelectedCity(value),
+                      value: _selectedCity,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
                   new Row(
                     children: <Widget>[
                       new Expanded(
@@ -408,6 +465,6 @@ class _EditProfileState extends State<EditProfile>
                   ),
                 ],
               ),
-            )));
+            ))));
   }
 }
